@@ -3,8 +3,6 @@ package usecase
 import (
 	"microservice/app/core"
 	"microservice/layers/domain"
-
-	"github.com/pkg/errors"
 )
 
 type NewsUseCase struct {
@@ -19,13 +17,15 @@ func NewNewsUseCase(log core.Logger, repo domain.NewsRepository) *NewsUseCase {
 	}
 }
 
-func (ucase *NewsUseCase) GetNews(page int32) (*domain.GetNewsResponse, error) {
-	news, err := ucase.repo.FetchByPageNumber(page)
-	if err != nil {
-		return &domain.GetNewsResponse{}, errors.Wrap(err, "Info")
-	}
+func (ucase *NewsUseCase) GetNews(page int32) ([]*domain.NewsCard, error) {
 
-	return &domain.GetNewsResponse{
-		News: news,
-	}, nil
+	panic("NOT IMPLEMENTS")
+	//news, err := ucase.repo.FetchByPageNumber(page)
+	//if err != nil {
+	//	return &domain.GetNewsResponse{}, errors.Wrap(err, "Info")
+	//}
+	//
+	//return &domain.GetNewsResponse{
+	//	News: news,
+	//}, nil
 }

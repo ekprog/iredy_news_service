@@ -3,11 +3,10 @@ package repos
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5"
 	"log"
 	"microservice/app/core"
 	"microservice/layers/domain"
-
-	"github.com/jackc/pgx/v5"
 )
 
 type NewsRepo struct {
@@ -22,9 +21,9 @@ func NewNewsrepo(log core.Logger, db *pgx.Conn) *NewsRepo {
 	}
 }
 
-func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
+func (r *NewsRepo) FetchByPageNumber(i int32) ([]*domain.NewsCard, error) {
 
-	query := fmt.Sprintf("select * from news limit %d", page*10)
+	query := fmt.Sprintf("select * from news")
 
 	rows, err := r.db.Query(context.Background(), query)
 	if err != nil {
@@ -45,4 +44,9 @@ func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 	}
 	return result, nil
 
+}
+
+func (r *NewsRepo) InsertIfNotExists(card *domain.NewsCard) error {
+	//TODO implement me
+	panic("implement me")
 }
