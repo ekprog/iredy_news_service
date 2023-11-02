@@ -3,14 +3,14 @@ package app
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"path"
+
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/pressly/goose"
 	"github.com/spf13/viper"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"os"
-	"path"
 )
 
 var (
@@ -60,17 +60,6 @@ func InitDatabase() (*sql.DB, error) {
 
 	log.Info("Database connection was created: %s", connectionString())
 	return localDB, nil
-}
-
-func InitGorm() (*gorm.DB, error) {
-	var err error
-	gormDB, err = gorm.Open(postgres.New(postgres.Config{
-		Conn: db,
-	}), &gorm.Config{})
-	if err != nil {
-		return nil, errors.Wrapf(err, "Cannot ping to database (gorm): %s", connectionString())
-	}
-	return gormDB, nil
 }
 
 func RunMigrations(rootDir ...string) error {
