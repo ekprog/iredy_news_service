@@ -2,39 +2,11 @@ syntax = "proto3";
 
 option go_package = "pb/api";
 
-import "api/app.proto";
-import "api/delivery.proto";
+import "api/message.proto";
 
 package pb;
 
-service StatusService {
-  rpc Ping (EmptyMessage) returns (StatusResponse) {}
-}
-
-
-// The service definition
-service DBCService {
-
-  // Categories
-  rpc GetCategories (GetCategoriesRequest) returns (GetCategoriesResponse) {}
-  rpc UpdateCategory (UpdateCategoriesRequest) returns (StatusResponse) {}
-  rpc RemoveCategory (IdRequest) returns (StatusResponse){}
-
-  // Challenges (User scope)
-  rpc GetChallenges (GetChallengesRequest) returns (GetUserChallengesResponse) {}
-  rpc CreateChallenge (CreateChallengeRequest) returns (CreateChallengesResponse) {}
-  rpc UpdateChallenge (UpdateChallengeRequest) returns (StatusResponse) {}
-  rpc RemoveChallenge (IdRequest) returns (StatusResponse) {}
-
-  // Challenges
-  rpc SearchChallenges(SearchChallengesRequest) returns (GetChallengesResponse) {}
-  rpc GetChallengeInfo(IdRequest) returns (GetChallengeInfoResponse) {}
-
-  rpc TrackDay (TrackDayRequest) returns (TrackDayResponse) {}
-  rpc GetMonthTracks (GetMonthTracksRequest) returns (GetMonthTracksResponse) {}
-}
-
-service UsersService {
-  rpc MyInfo (EmptyMessage) returns (GetUserResponse) {}
-  rpc Info (IdRequest) returns (GetUserResponse) {}
+service NewsService {
+    rpc GetNews(GetNewsRequest) returns (GetNewsResponse){}
+    rpc AddNewsCard(CreateNewsCardRequest) returns (CreateNewsCardResponse){}
 }

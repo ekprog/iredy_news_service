@@ -2,15 +2,15 @@ package bootstrap
 
 import (
 	"database/sql"
-	trmsql "github.com/avito-tech/go-transaction-manager/sql"
-	trmcontext "github.com/avito-tech/go-transaction-manager/trm/context"
-	"github.com/avito-tech/go-transaction-manager/trm/manager"
-	"github.com/pkg/errors"
-	"gorm.io/gorm"
 	"microservice/app"
 	"microservice/app/core"
 	"microservice/app/job"
 	"microservice/app/kafka"
+
+	trmsql "github.com/avito-tech/go-transaction-manager/sql"
+	trmcontext "github.com/avito-tech/go-transaction-manager/trm/context"
+	"github.com/avito-tech/go-transaction-manager/trm/manager"
+	"github.com/pkg/errors"
 )
 
 func Run(rootPath ...string) error {
@@ -39,11 +39,6 @@ func Run(rootPath ...string) error {
 		return errors.Wrap(err, "error while init db")
 	}
 
-	gormDB, err := app.InitGorm()
-	if err != nil {
-		return errors.Wrap(err, "error while init gorm db")
-	}
-
 	// Migrations
 	err = app.RunMigrations(rootPath...)
 	if err != nil {
@@ -63,12 +58,6 @@ func Run(rootPath ...string) error {
 		return db
 	}); err != nil {
 		return errors.Wrap(err, "cannot provide db")
-	}
-
-	if err = di.Provide(func() *gorm.DB {
-		return gormDB
-	}); err != nil {
-		return errors.Wrap(err, "cannot provide gorm db")
 	}
 
 	if err = di.Provide(func() *trmsql.CtxGetter {
@@ -115,15 +104,6 @@ func Run(rootPath ...string) error {
 	// HERE CORE READY FOR WORK...
 	//
 	//
-	err = RunHooks()
-	if err != nil {
-		return errors.Wrap(err, "cannot run hooks")
-	}
-
-	// CRON
-	if err := initJobs(); err != nil {
-		return errors.Wrap(err, "error while init jobs")
-	}
 
 	if err := job.Start(); err != nil {
 		return errors.Wrap(err, "error while start jobs")

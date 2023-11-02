@@ -6,7 +6,7 @@ app:
     port: 8080
 
 db:
-  enabled: false
+  enabled: true
   driver: postgres
   host: 127.0.0.1
   port:

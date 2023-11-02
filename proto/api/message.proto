@@ -4,47 +4,31 @@ option go_package = "pb/api";
 
 import "google/protobuf/timestamp.proto";
 
-
-message DBCCategory {
-  int64 id = 1;
-  int64 user_id = 2;
-  string name = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
-  google.protobuf.Timestamp deleted_at = 6;
+// GET NEWS
+message GetNewsRequest {
+  int32 page = 1;
 }
 
-message DBCUserChallenge {
-  int64 id = 1;
-  int64 user_id = 2;
-  optional int64 category_id = 3;
-  optional string category_name = 4;
-  bool is_auto_track = 5;
-  string name = 6;
-  optional string desc = 7;
-  optional string image = 8;
-  int64 last_series = 9;
-  repeated DBTrack last_tracks = 10;
-  google.protobuf.Timestamp created_at = 11;
-  google.protobuf.Timestamp updated_at = 12;
-  google.protobuf.Timestamp deleted_at = 13;
+message GetNewsResponse{
+  repeated NewsCard data = 1;
 }
 
-message DBCChallenge {
-  int64 id = 1;
-  int64 owner_id = 12;
-  optional int64 category_id = 2;
-  optional string category_name =3 ;
-  bool is_auto_track = 4;
-  string name = 5;
-  optional string desc = 6;
-  optional string image = 7;
-  repeated DBTrack last_tracks = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
-  google.protobuf.Timestamp deleted_at = 11;
-
+message CreateNewsCardRequest{
+  NewsCard newsCard = 1;
 }
+
+message CreateNewsCardResponse{
+  
+}
+
+message NewsCard{
+  int32 id = 1;
+  string title = 2;
+  string image = 3;
+  string type = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
 
 message DBTrack {
   google.protobuf.Timestamp date = 1;
@@ -53,13 +37,4 @@ message DBTrack {
   int64 last_series = 4;
   int64 score = 5;
   int64 score_daily = 6;
-}
-
-message User {
-  int64 id = 1;
-  int64 score = 2;
-  int64 score_daily = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
-  google.protobuf.Timestamp deleted_at = 6;
 }
