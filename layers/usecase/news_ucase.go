@@ -43,7 +43,7 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 		return domain.GetNewsResponse{
 			Status: pb.Status{
 				Code:    domain.NotFound,
-				Message: domain.NotFound,
+				Message: "There are no news",
 			},
 			News: []*domain.NewsCard{},
 		}, errors.Wrap(err, "FetchByPageNumber")
