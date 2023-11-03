@@ -10,12 +10,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/pressly/goose"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 )
 
 var (
-	db     *sql.DB
-	gormDB *gorm.DB
+	db *sql.DB
 )
 
 func connectionString() string {

@@ -10,7 +10,14 @@ message GetNewsRequest {
 }
 
 message GetNewsResponse{
-  repeated NewsCard data = 1;
+  Status status = 1;
+  repeated NewsCard data = 2;
+}
+
+message Status {
+  string code = 1;
+  string message = 2;
+
 }
 
 message CreateNewsCardRequest{

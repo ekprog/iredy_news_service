@@ -3,6 +3,7 @@ package usecase
 import (
 	"microservice/app/core"
 	"microservice/layers/domain"
+	pb "microservice/pkg/pb/api"
 
 	"github.com/pkg/errors"
 )
@@ -19,13 +20,42 @@ func NewNewsUseCase(log core.Logger, repo domain.NewsRepository) *NewsUseCase {
 	}
 }
 
-func (ucase *NewsUseCase) GetNews(page int32) (*domain.GetNewsResponse, error) {
-	news, err := ucase.repo.FetchByPageNumber(page)
-	if err != nil {
-		return &domain.GetNewsResponse{}, errors.Wrap(err, "Info")
+func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
+	// Если передали страницу <= 0, не выходим из функции
+	if page <= 0 {
+		return domain.GetNewsResponse{
+			Status: pb.Status{
+				Code:    domain.ValidationError,
+				Message: "page can't have value of <= 0",
+			},
+			News: []*domain.NewsCard{},
+		}, nil
 	}
 
-	return &domain.GetNewsResponse{
-		News: news,
+	repoRes, err := ucase.repo.FetchByPageNumber(page)
+	// Ошибка запроса к базе
+	if err != nil {
+		return domain.GetNewsResponse{}, errors.Wrap(err, "FetchByPageNumber")
+	}
+
+	// Null ответ от базы
+	if repoRes == nil {
+		return domain.GetNewsResponse{
+			Status: pb.Status{
+				Code:    domain.NotFound,
+				Message: domain.NotFound,
+			},
+			News: []*domain.NewsCard{},
+		}, errors.Wrap(err, "FetchByPageNumber")
+	}
+
+	// Успех
+	return domain.GetNewsResponse{
+		Status: pb.Status{
+			Code:    domain.Success,
+			Message: domain.Success,
+		},
+		News: repoRes,
 	}, nil
+
 }

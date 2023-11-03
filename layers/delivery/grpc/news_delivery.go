@@ -6,6 +6,8 @@ import (
 	"microservice/app/core"
 	"microservice/layers/domain"
 	pb "microservice/pkg/pb/api"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type NewsDeliveryService struct {
@@ -27,17 +29,55 @@ func (d *NewsDeliveryService) Init() error {
 }
 
 func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest) (*pb.GetNewsResponse, error) {
-	uCaseRes, err := d.newsUcase.GetNews(1)
+	uCaseRes, err := d.newsUcase.GetNews(r.Page)
+
 	if err != nil {
-		print(err.Error())
+		return &pb.GetNewsResponse{
+			Status: &pb.Status{
+				Code:    domain.ServerError,
+				Message: err.Error(),
+			},
+			Data: nil,
+		}, nil
 	}
 
-	return &pb.GetNewsResponse{
-		Data: []*pb.NewsCard{
-			&pb.NewsCard{
-				Id:    int32(uCaseRes[0].Id),
-				Title: uCaseRes[0].Title,
+	if r == nil {
+		return &pb.GetNewsResponse{
+			Status: &pb.Status{
+				Code:    domain.ValidationError,
+				Message: domain.FieldRequired,
 			},
+			Data: nil,
+		}, nil
+	}
+
+	response := &pb.GetNewsResponse{
+		Status: &pb.Status{
+			Code:    uCaseRes.Status.Code,
+			Message: uCaseRes.Status.Message,
 		},
-	}, nil
+		Data: nil,
+	}
+
+	for i := range uCaseRes.News {
+
+		r := &pb.NewsCard{
+			Id:        uCaseRes.News[i].Id,
+			Title:     uCaseRes.News[i].Title,
+			Image:     uCaseRes.News[i].Image,
+			Type:      uCaseRes.News[i].Type,
+			CreatedAt: timestamppb.New(uCaseRes.News[i].CreatedAt),
+		}
+		response.Data = append(response.Data, r)
+
+	}
+	// println(response.Data[0].Id)
+	// println(response.Data[1].Id)
+	// println(response.Data[2].Id)
+	// println(response.Data[3].Id)
+	// println(response.Data[4].Id)
+	// println(response.Status.Code)
+	// println(response.Status.Message)
+
+	return response, nil
 }
