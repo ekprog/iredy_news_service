@@ -20,7 +20,7 @@ func NewNewsrepo(log core.Logger, db *sql.DB) *NewsRepo {
 	}
 }
 
-func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
+func (r *NewsRepo) FetchByPageNumber(i int32) ([]*domain.NewsCard, error) {
 
 	query := fmt.Sprintf("select id, title, image, type, created_at, updated_at, deleted_at from news limit %d;", page*10)
 
