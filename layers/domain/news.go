@@ -43,7 +43,7 @@ type NewsUseCase interface {
 
 // Response
 type GetNewsResponse struct {
-	Status pb.Status
+	Status pb.Status // ToDo: грубая ошибка. pb.* вообще никак не связано с доменом (Домен не зависит от сетевого протокола)
 	News   []*NewsCard
 }
 

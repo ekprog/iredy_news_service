@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS news
 (
     id          SERIAL            PRIMARY KEY,
     title       VARCHAR(255)      not null default 0,
-    image       VARCHAR(255)      not null default 0,
+    image       VARCHAR(255)      not null default 0, -- ToDo: default 0 ? Лучше убрать default вообще
     type        VARCHAR(10)       not null ,
 
     created_at  timestamp(0)    NOT NULL DEFAULT now(),
