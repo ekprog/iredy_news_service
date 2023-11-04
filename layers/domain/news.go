@@ -2,7 +2,6 @@ package domain
 
 import (
 	"context"
-	pb "microservice/pkg/pb/api"
 	"time"
 )
 
@@ -20,6 +19,11 @@ const (
 	ServerError     string = "server_error"
 )
 
+type Status struct {
+	Code    string
+	Message string
+}
+
 type NewsCard struct {
 	Id        int32
 	Title     string
@@ -33,7 +37,7 @@ type NewsCard struct {
 // REPOSITORIES
 type NewsRepository interface {
 	FetchByPageNumber(ctx context.Context, page int32) ([]*NewsCard, error)
-	InsertIfNotExists(ctx context.Context, newsCard *NewsCard) error
+	InsertIfNotExists(ctx context.Context, newsCard *NewsCard) (int32, error)
 }
 
 // USE CASES
@@ -44,11 +48,11 @@ type NewsUseCase interface {
 
 // Response
 type GetNewsResponse struct {
-	Status pb.Status // ToDo: грубая ошибка. pb.* вообще никак не связано с доменом (Домен не зависит от сетевого протокола)
+	Status Status // ToDo: грубая ошибка. pb.* вообще никак не связано с доменом (Домен не зависит от сетевого протокола)
 	News   []*NewsCard
 }
 
 type CreateNewsResponse struct {
-	Status pb.Status
+	Status Status
 	Id     int32
 }

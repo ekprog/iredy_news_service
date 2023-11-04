@@ -4,7 +4,6 @@ import (
 	"context"
 	"microservice/app/core"
 	"microservice/layers/domain"
-	pb "microservice/pkg/pb/api"
 
 	"github.com/pkg/errors"
 )
@@ -25,7 +24,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 	// Если передали страницу <= 0, не выходим из функции
 	if page <= 0 {
 		return domain.GetNewsResponse{
-			Status: pb.Status{
+			Status: domain.Status{
 				Code:    domain.ValidationError,
 				Message: "page can't have value of <= 0",
 			},
@@ -45,7 +44,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 	// ошибка, то все остальное игнорируется)
 	if repoRes == nil {
 		return domain.GetNewsResponse{
-			Status: pb.Status{
+			Status: domain.Status{
 				Code:    domain.NotFound,
 				Message: "There are no news",
 			},
@@ -55,7 +54,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 
 	// Успех
 	return domain.GetNewsResponse{
-		Status: pb.Status{
+		Status: domain.Status{
 			Code:    domain.Success,
 			Message: domain.Success,
 		},
@@ -66,11 +65,27 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 
 func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
 
+	resId, err := ucase.repo.InsertIfNotExists(context.Background(), &newsCard)
+	// Ошибка запроса к базе
+	if err != nil {
+		return domain.CreateNewsResponse{}, errors.Wrap(err, "InsertIfNotExists")
+	}
+
+	if resId == 0 {
+		return domain.CreateNewsResponse{
+			Status: domain.Status{
+				Code:    domain.FieldRequired,
+				Message: "Field Title Required",
+			},
+			Id: 0,
+		}, nil
+	}
+
 	return domain.CreateNewsResponse{
-		Status: pb.Status{
+		Status: domain.Status{
 			Code:    domain.Success,
 			Message: domain.Success,
 		},
-		Id: newsCard.Id,
+		Id: resId,
 	}, nil
 }

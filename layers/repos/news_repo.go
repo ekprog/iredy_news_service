@@ -48,7 +48,21 @@ func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain
 
 }
 
-func (r *NewsRepo) InsertIfNotExists(ctx context.Context, card *domain.NewsCard) error {
-	//TODO implement me
-	panic("implement me")
+func (r *NewsRepo) InsertIfNotExists(ctx context.Context, card *domain.NewsCard) (int32, error) {
+	type_default := "150x150"
+
+	// Если Title пустой, то не делаем insert
+	if card.Title == "" {
+		return 0, nil
+	}
+
+	query := fmt.Sprintf("INSERT INTO news (title, image, type) VALUES ('%s', '%s', '%s') returning id;", card.Title, card.Image, type_default)
+	err := r.db.QueryRow(query).Scan(&card.Id)
+	if err != nil {
+
+		errors.Wrap(err, "Query while InsertIfNotExists")
+		return 0, err
+	}
+
+	return card.Id, nil
 }

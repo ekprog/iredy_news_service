@@ -21,7 +21,9 @@ message Status {
 }
 
 message CreateNewsCardRequest{
-  NewsCard newsCard = 1;
+  string title = 2;
+  string image = 3;
+  string type = 4; //Пока что константой заполняем
 }
 
 message CreateNewsCardResponse{

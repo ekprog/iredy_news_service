@@ -85,9 +85,21 @@ func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest)
 }
 
 func (d *NewsDeliveryService) AddNewsCard(ctx context.Context, r *pb.CreateNewsCardRequest) (*pb.CreateNewsCardResponse, error) {
-	_, err := d.newsUcase.AddNewsCard(ctx, domain.NewsCard{})
-	if err != nil {
-		return &pb.CreateNewsCardResponse{}, errors.Wrap(err, "")
+	card := domain.NewsCard{
+		Title: r.Title,
+		Image: r.Image,
+		Type:  r.Type,
 	}
-	return &pb.CreateNewsCardResponse{}, nil
+
+	res, err := d.newsUcase.AddNewsCard(ctx, card)
+	if err != nil {
+		return &pb.CreateNewsCardResponse{}, errors.Wrap(err, "Error at AddNewsCard UseCase Call")
+	}
+	return &pb.CreateNewsCardResponse{
+		Status: &pb.Status{
+			Code:    res.Status.Code,
+			Message: res.Status.Message,
+		},
+		Id: res.Id,
+	}, nil
 }
