@@ -26,6 +26,7 @@ func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 
 	rows, err := r.db.Query(query)
 	if err != nil {
+		// ToDo: Здесь вся программа упадет и сервис перестанет существовать
 		log.Fatal(err)
 	}
 	defer rows.Close()
@@ -36,6 +37,7 @@ func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 		var r domain.NewsCard
 		err := rows.Scan(&r.Id, &r.Title, &r.Image, &r.Type, &r.CreatedAt, &r.UpdatedAt, &r.DeletedAt)
 		if err != nil {
+			// ToDo: Здесь вся программа упадет и сервис перестанет существовать
 			log.Fatal(err)
 		}
 		result = append(result, &r)

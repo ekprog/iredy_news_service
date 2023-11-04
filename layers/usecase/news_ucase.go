@@ -39,6 +39,10 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 	}
 
 	// Null ответ от базы
+
+	// ToDo: Здесь нет err (вместо errors.Wrap должен быть nil)
+	// (Либо возвращаем ошибку, либо структуру - и то и тл нет смысла возвращать, потому что если есть
+	// ошибка, то все остальное игнорируется)
 	if repoRes == nil {
 		return domain.GetNewsResponse{
 			Status: pb.Status{
