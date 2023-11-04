@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	pb "microservice/pkg/pb/api"
 	"time"
 )
@@ -31,14 +32,14 @@ type NewsCard struct {
 
 // REPOSITORIES
 type NewsRepository interface {
-	FetchByPageNumber(int32) ([]*NewsCard, error)
-	InsertIfNotExists(*NewsCard) error
+	FetchByPageNumber(ctx context.Context, page int32) ([]*NewsCard, error)
+	InsertIfNotExists(ctx context.Context, newsCard *NewsCard) error
 }
 
 // USE CASES
 type NewsUseCase interface {
-	GetNews(page int32) (GetNewsResponse, error)
-	AddNewsCard(newsCard NewsCard) error
+	GetNews(ctx context.Context, page int32) (GetNewsResponse, error)
+	AddNewsCard(ctx context.Context, newsCard NewsCard) (CreateNewsResponse, error)
 }
 
 // Response

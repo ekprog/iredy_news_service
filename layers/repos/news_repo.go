@@ -1,11 +1,13 @@
 package repos
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"microservice/app/core"
 	"microservice/layers/domain"
+
+	"github.com/pkg/errors"
 )
 
 type NewsRepo struct {
@@ -20,14 +22,14 @@ func NewNewsrepo(log core.Logger, db *sql.DB) *NewsRepo {
 	}
 }
 
-func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
+func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain.NewsCard, error) {
 
 	query := fmt.Sprintf("SELECT id, title, image, type, created_at, updated_at, deleted_at FROM news LIMIT %d OFFSET %d;", page*10, (page-1)*10)
 
 	rows, err := r.db.Query(query)
 	if err != nil {
-		// ToDo: Здесь вся программа упадет и сервис перестанет существовать
-		log.Fatal(err)
+
+		errors.Wrap(err, "Query while FetchByPageNumber")
 	}
 	defer rows.Close()
 
@@ -37,8 +39,7 @@ func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 		var r domain.NewsCard
 		err := rows.Scan(&r.Id, &r.Title, &r.Image, &r.Type, &r.CreatedAt, &r.UpdatedAt, &r.DeletedAt)
 		if err != nil {
-			// ToDo: Здесь вся программа упадет и сервис перестанет существовать
-			log.Fatal(err)
+			errors.Wrap(err, "Scan while FetchByPageNumber")
 		}
 		result = append(result, &r)
 	}
@@ -47,7 +48,7 @@ func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 
 }
 
-func (r *NewsRepo) InsertIfNotExists(card *domain.NewsCard) error {
+func (r *NewsRepo) InsertIfNotExists(ctx context.Context, card *domain.NewsCard) error {
 	//TODO implement me
 	panic("implement me")
 }

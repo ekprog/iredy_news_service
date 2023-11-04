@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"microservice/app/core"
 	"microservice/layers/domain"
 	pb "microservice/pkg/pb/api"
@@ -20,7 +21,7 @@ func NewNewsUseCase(log core.Logger, repo domain.NewsRepository) *NewsUseCase {
 	}
 }
 
-func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
+func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNewsResponse, error) {
 	// Если передали страницу <= 0, не выходим из функции
 	if page <= 0 {
 		return domain.GetNewsResponse{
@@ -32,7 +33,7 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 		}, nil
 	}
 
-	repoRes, err := ucase.repo.FetchByPageNumber(page)
+	repoRes, err := ucase.repo.FetchByPageNumber(context.Background(), page)
 	// Ошибка запроса к базе
 	if err != nil {
 		return domain.GetNewsResponse{}, errors.Wrap(err, "FetchByPageNumber")
@@ -40,7 +41,6 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 
 	// Null ответ от базы
 
-	// ToDo: Здесь нет err (вместо errors.Wrap должен быть nil)
 	// (Либо возвращаем ошибку, либо структуру - и то и тл нет смысла возвращать, потому что если есть
 	// ошибка, то все остальное игнорируется)
 	if repoRes == nil {
@@ -50,7 +50,7 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 				Message: "There are no news",
 			},
 			News: []*domain.NewsCard{},
-		}, errors.Wrap(err, "FetchByPageNumber")
+		}, nil
 	}
 
 	// Успех
@@ -64,7 +64,7 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 
 }
 
-func (ucase *NewsUseCase) AddNewsCard(newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
+func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
 
 	return domain.CreateNewsResponse{
 		Status: pb.Status{

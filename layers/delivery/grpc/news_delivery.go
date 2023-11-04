@@ -7,6 +7,7 @@ import (
 	"microservice/layers/domain"
 	pb "microservice/pkg/pb/api"
 
+	"github.com/pkg/errors"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -29,7 +30,7 @@ func (d *NewsDeliveryService) Init() error {
 }
 
 func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest) (*pb.GetNewsResponse, error) {
-	uCaseRes, err := d.newsUcase.GetNews(r.Page)
+	uCaseRes, err := d.newsUcase.GetNews(ctx, r.Page)
 
 	if err != nil {
 		return &pb.GetNewsResponse{
@@ -71,6 +72,7 @@ func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest)
 		response.Data = append(response.Data, r)
 
 	}
+	// For Debug
 	// println(response.Data[0].Id)
 	// println(response.Data[1].Id)
 	// println(response.Data[2].Id)
@@ -83,5 +85,9 @@ func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest)
 }
 
 func (d *NewsDeliveryService) AddNewsCard(ctx context.Context, r *pb.CreateNewsCardRequest) (*pb.CreateNewsCardResponse, error) {
-	panic("not implemented")
+	_, err := d.newsUcase.AddNewsCard(ctx, domain.NewsCard{})
+	if err != nil {
+		return &pb.CreateNewsCardResponse{}, errors.Wrap(err, "")
+	}
+	return &pb.CreateNewsCardResponse{}, nil
 }
