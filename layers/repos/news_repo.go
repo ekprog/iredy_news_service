@@ -22,7 +22,7 @@ func NewNewsrepo(log core.Logger, db *sql.DB) *NewsRepo {
 
 func (r *NewsRepo) FetchByPageNumber(page int32) ([]*domain.NewsCard, error) {
 
-	query := fmt.Sprintf("select id, title, image, type, created_at, updated_at, deleted_at from news limit %d;", page*10)
+	query := fmt.Sprintf("SELECT id, title, image, type, created_at, updated_at, deleted_at FROM news LIMIT %d OFFSET %d;", page*10, (page-1)*10)
 
 	rows, err := r.db.Query(query)
 	if err != nil {
