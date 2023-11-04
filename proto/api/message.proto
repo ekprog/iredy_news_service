@@ -25,7 +25,8 @@ message CreateNewsCardRequest{
 }
 
 message CreateNewsCardResponse{
-  
+  Status status = 1;
+  int32 id = 2;
 }
 
 message NewsCard{

@@ -81,3 +81,7 @@ func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest)
 
 	return response, nil
 }
+
+func (d *NewsDeliveryService) AddNewsCard(ctx context.Context, r *pb.CreateNewsCardRequest) (*pb.CreateNewsCardResponse, error) {
+	panic("not implemented")
+}

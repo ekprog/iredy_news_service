@@ -38,11 +38,16 @@ type NewsRepository interface {
 // USE CASES
 type NewsUseCase interface {
 	GetNews(page int32) (GetNewsResponse, error)
-	//AddNewsCard(newsCard NewsCard) error
+	AddNewsCard(newsCard NewsCard) error
 }
 
 // Response
 type GetNewsResponse struct {
 	Status pb.Status
 	News   []*NewsCard
+}
+
+type CreateNewsResponse struct {
+	Status pb.Status
+	Id     int32
 }

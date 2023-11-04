@@ -59,3 +59,14 @@ func (ucase *NewsUseCase) GetNews(page int32) (domain.GetNewsResponse, error) {
 	}, nil
 
 }
+
+func (ucase *NewsUseCase) AddNewsCard(newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
+
+	return domain.CreateNewsResponse{
+		Status: pb.Status{
+			Code:    domain.Success,
+			Message: domain.Success,
+		},
+		Id: newsCard.Id,
+	}, nil
+}
