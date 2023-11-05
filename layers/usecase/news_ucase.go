@@ -32,6 +32,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 		}, nil
 	}
 
+	// ToDo: context.Background() убрать! Протянул же ctx
 	repoRes, err := ucase.repo.FetchByPageNumber(context.Background(), page)
 	// Ошибка запроса к базе
 	if err != nil {
@@ -65,6 +66,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 
 func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
 
+	// ToDo: context.Background() убрать! Протянул же ctx
 	resId, err := ucase.repo.InsertIfNotExists(context.Background(), &newsCard)
 	// Ошибка запроса к базе
 	if err != nil {

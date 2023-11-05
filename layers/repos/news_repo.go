@@ -26,9 +26,11 @@ func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain
 
 	query := fmt.Sprintf("SELECT id, title, image, type, created_at, updated_at, deleted_at FROM news LIMIT %d OFFSET %d;", page*10, (page-1)*10)
 
+	// ToDo: QueryContext вместо Query
 	rows, err := r.db.Query(query)
 	if err != nil {
 
+		// ToDo: обернул, но не вернул
 		errors.Wrap(err, "Query while FetchByPageNumber")
 	}
 	defer rows.Close()
@@ -49,7 +51,7 @@ func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain
 }
 
 func (r *NewsRepo) InsertIfNotExists(ctx context.Context, card *domain.NewsCard) (int32, error) {
-	type_default := "150x150"
+	type_default := "150x150" // type default описывается в миграциях БД
 
 	// Если Title пустой, то не делаем insert
 	if card.Title == "" {
@@ -57,6 +59,7 @@ func (r *NewsRepo) InsertIfNotExists(ctx context.Context, card *domain.NewsCard)
 	}
 
 	query := fmt.Sprintf("INSERT INTO news (title, image, type) VALUES ('%s', '%s', '%s') returning id;", card.Title, card.Image, type_default)
+	// ToDo: QueryRowContext вместо QueryRow
 	err := r.db.QueryRow(query).Scan(&card.Id)
 	if err != nil {
 
