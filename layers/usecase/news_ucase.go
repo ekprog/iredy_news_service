@@ -26,20 +26,17 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 		return domain.GetNewsResponse{
 			Status: domain.Status{
 				Code:    domain.ValidationError,
-				Message: "page can't have value of <= 0",
+				Message: "page can't have value of <= 0 or page is required",
 			},
 			News: []*domain.NewsCard{},
 		}, nil
 	}
 
-	// ToDo: context.Background() убрать! Протянул же ctx
-	repoRes, err := ucase.repo.FetchByPageNumber(context.Background(), page)
+	repoRes, err := ucase.repo.FetchByPageNumber(ctx, page)
 	// Ошибка запроса к базе
 	if err != nil {
 		return domain.GetNewsResponse{}, errors.Wrap(err, "FetchByPageNumber")
 	}
-
-	// Null ответ от базы
 
 	// (Либо возвращаем ошибку, либо структуру - и то и тл нет смысла возвращать, потому что если есть
 	// ошибка, то все остальное игнорируется)
@@ -66,8 +63,7 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 
 func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
 
-	// ToDo: context.Background() убрать! Протянул же ctx
-	resId, err := ucase.repo.InsertIfNotExists(context.Background(), &newsCard)
+	resId, err := ucase.repo.InsertIfNotExistsNewsCard(ctx, &newsCard)
 	// Ошибка запроса к базе
 	if err != nil {
 		return domain.CreateNewsResponse{}, errors.Wrap(err, "InsertIfNotExists")
@@ -89,5 +85,35 @@ func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsC
 			Message: domain.Success,
 		},
 		Id: resId,
+	}, nil
+}
+
+func (ucase *NewsUseCase) AddNewsDetails(ctx context.Context, newsDetails []*domain.NewsDetails, news_id int32) (domain.CreateNewsDetailesResponse, error) {
+	if newsDetails == nil {
+		return domain.CreateNewsDetailesResponse{
+			Status: domain.Status{
+				Code:    domain.NotFound,
+				Message: "empty newsDeatils list cannot be empty БЛЯДЬ!",
+			},
+		}, nil
+	}
+
+	err := ucase.repo.InsertIfNotExistsNewsDetails(ctx, newsDetails, news_id)
+	// Ошибка запроса к базе
+	if err != nil {
+		return domain.CreateNewsDetailesResponse{
+			Status: domain.Status{
+				Code:    domain.ValidationError,
+				Message: "validation",
+			},
+		}, nil
+
+	}
+
+	return domain.CreateNewsDetailesResponse{
+		Status: domain.Status{
+			Code:    domain.Success,
+			Message: "Success",
+		},
 	}, nil
 }

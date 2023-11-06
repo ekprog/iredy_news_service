@@ -24,11 +24,28 @@ type Status struct {
 	Message string
 }
 
+// Новость, которая будет отображаться на главной
 type NewsCard struct {
-	Id        int32
-	Title     string
-	Image     string
-	Type      string
+	Id       int32
+	Title    string
+	Image    string
+	Type     string
+	IsActive bool
+
+	UpdatedAt time.Time
+	CreatedAt time.Time
+	DeletedAt *time.Time
+}
+
+// "Сториз", которые будут показываться
+type NewsDetails struct {
+	Id         int32
+	Title      string
+	Image      string
+	Type       string
+	NewsID     int32
+	SwipeDelay int32 //in seconds
+
 	UpdatedAt time.Time
 	CreatedAt time.Time
 	DeletedAt *time.Time
@@ -37,13 +54,15 @@ type NewsCard struct {
 // REPOSITORIES
 type NewsRepository interface {
 	FetchByPageNumber(ctx context.Context, page int32) ([]*NewsCard, error)
-	InsertIfNotExists(ctx context.Context, newsCard *NewsCard) (int32, error)
+	InsertIfNotExistsNewsCard(ctx context.Context, newsCard *NewsCard) (int32, error)
+	InsertIfNotExistsNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) error
 }
 
 // USE CASES
 type NewsUseCase interface {
 	GetNews(ctx context.Context, page int32) (GetNewsResponse, error)
 	AddNewsCard(ctx context.Context, newsCard NewsCard) (CreateNewsResponse, error)
+	AddNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) (CreateNewsDetailesResponse, error)
 }
 
 // Response
@@ -55,4 +74,8 @@ type GetNewsResponse struct {
 type CreateNewsResponse struct {
 	Status Status
 	Id     int32
+}
+
+type CreateNewsDetailesResponse struct {
+	Status Status
 }

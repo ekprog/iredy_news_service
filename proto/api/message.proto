@@ -20,6 +20,7 @@ message Status {
 
 }
 
+// BEGIN Создание карточки новости
 message CreateNewsCardRequest{
   string title = 2;
   string image = 3;
@@ -30,6 +31,21 @@ message CreateNewsCardResponse{
   Status status = 1;
   int32 id = 2;
 }
+// END Создание карточки новости
+
+
+// BEGIN
+message CreateNewsDetailsRequest{
+  repeated NewsDetails data = 1;
+  int32 news_id = 2;
+}
+
+message CreateNewsDetailsResponse{
+  Status status = 1;
+}
+
+// END
+
 
 message NewsCard{
   int32 id = 1;
@@ -37,6 +53,14 @@ message NewsCard{
   string image = 3;
   string type = 4;
   google.protobuf.Timestamp created_at = 5;
+}
+
+message NewsDetails {
+  int32 id = 1;
+  string title = 2;
+  string image = 3;
+  string type = 4;
+  int32 swipe_delay = 5;
 }
 
 
