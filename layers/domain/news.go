@@ -54,6 +54,7 @@ type NewsDetails struct {
 // REPOSITORIES
 type NewsRepository interface {
 	FetchByPageNumber(ctx context.Context, page int32) ([]*NewsCard, error)
+	FetchNewsDetailsByPageNumber(ctx context.Context, page int32, news_id int32) ([]*NewsDetails, error)
 	InsertIfNotExistsNewsCard(ctx context.Context, newsCard *NewsCard) (int32, error)
 	InsertIfNotExistsNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) error
 }
@@ -61,14 +62,20 @@ type NewsRepository interface {
 // USE CASES
 type NewsUseCase interface {
 	GetNews(ctx context.Context, page int32) (GetNewsResponse, error)
+	GetNewsDetails(ctx context.Context, page int32, news_id int32) (GetNewsDetailsResponse, error)
 	AddNewsCard(ctx context.Context, newsCard NewsCard) (CreateNewsResponse, error)
 	AddNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) (CreateNewsDetailesResponse, error)
 }
 
 // Response
 type GetNewsResponse struct {
-	Status Status // ToDo: грубая ошибка. pb.* вообще никак не связано с доменом (Домен не зависит от сетевого протокола)
+	Status Status
 	News   []*NewsCard
+}
+
+type GetNewsDetailsResponse struct {
+	Status      Status
+	NewsDetails []*NewsDetails
 }
 
 type CreateNewsResponse struct {

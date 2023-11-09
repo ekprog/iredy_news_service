@@ -10,4 +10,5 @@ service NewsService {
     rpc GetNews(GetNewsRequest) returns (GetNewsResponse){}
     rpc AddNewsCard(CreateNewsCardRequest) returns (CreateNewsCardResponse){}
     rpc AddNewsDetails(CreateNewsDetailsRequest) returns (CreateNewsDetailsResponse){}
+    rpc GetNewsDetails(GetNewsDetailsRequest) returns (GetNewsDetailsResponse){}
 }

@@ -30,7 +30,6 @@ func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain
 
 	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
-
 		return []*domain.NewsCard{}, errors.Wrap(err, "Query while FetchByPageNumber")
 	}
 	defer rows.Close()
@@ -48,6 +47,33 @@ func (r *NewsRepo) FetchByPageNumber(ctx context.Context, page int32) ([]*domain
 
 	return result, nil
 
+}
+
+func (r *NewsRepo) FetchNewsDetailsByPageNumber(ctx context.Context, page int32, news_id int32) ([]*domain.NewsDetails, error) {
+	query := fmt.Sprintf(`SELECT nd.id, nd.title, nd.image, nd.type, nd.created_at, nd.updated_at FROM news_details nd
+						LEFT JOIN news 
+						on nd.news_id = news.id 
+								WHERE nd.deleted_at is null and nd.is_active = true and nd.news_id = %d
+								LIMIT %d OFFSET %d; `, news_id, page*10, (page-1)*10)
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return []*domain.NewsDetails{}, errors.Wrap(err, "Query while FetchByPageNumber")
+	}
+	defer rows.Close()
+
+	var result []*domain.NewsDetails
+
+	for rows.Next() {
+		var r domain.NewsDetails
+		err := rows.Scan(&r.Id, &r.Title, &r.Image, &r.Type, &r.CreatedAt, &r.UpdatedAt)
+		if err != nil {
+			return []*domain.NewsDetails{}, errors.Wrap(err, "Scan while FetchByPageNumber")
+		}
+		result = append(result, &r)
+	}
+
+	return result, err
 }
 
 func (r *NewsRepo) InsertIfNotExistsNewsCard(ctx context.Context, card *domain.NewsCard) (int32, error) {
@@ -83,12 +109,14 @@ func (r NewsRepo) InsertIfNotExistsNewsDetails(ctx context.Context, newsDetails 
 
 	}
 
-	query := "INSERT INTO news_details (title, image, type, swipe_delay, news_id) VALUES "
+	query := "INSERT INTO news_details (title, image, type, swipe_delay, news_id, is_active) VALUES "
+
+	var is_active = true
 
 	for i := range newsDetails {
 
 		query += "(" +
-			fmt.Sprintf("'%s','%s', '150x150', %d, %d", newsDetails[i].Title, newsDetails[i].Image, newsDetails[i].SwipeDelay, newsDetails[i].NewsID)
+			fmt.Sprintf("'%s','%s', '150x150', %d, %d, %t", newsDetails[i].Title, newsDetails[i].Image, newsDetails[i].SwipeDelay, newsDetails[i].NewsID, is_active)
 
 		// Если последний элемент, то ставим скобку без запятой
 		if i == len(newsDetails)-1 {

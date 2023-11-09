@@ -22,6 +22,7 @@ CREATE TABLE
         news_id INTEGER REFERENCES news(id) not null,
 
         swipe_delay INTEGER not null,
+        is_active BOOLEAN,
 
         created_at timestamp(0) NOT NULL DEFAULT now (),
         updated_at timestamp(0) NOT NULL DEFAULT now (),

@@ -60,6 +60,46 @@ func (ucase *NewsUseCase) GetNews(ctx context.Context, page int32) (domain.GetNe
 	}, nil
 
 }
+func (ucase *NewsUseCase) GetNewsDetails(ctx context.Context, page int32, news_id int32) (domain.GetNewsDetailsResponse, error) {
+	// Если передали страницу <= 0, не выходим из функции
+	if page <= 0 {
+		return domain.GetNewsDetailsResponse{
+			Status: domain.Status{
+				Code:    domain.ValidationError,
+				Message: "page can't have value of <= 0 or page is required",
+			},
+			NewsDetails: nil,
+		}, nil
+	}
+
+	repoRes, err := ucase.repo.FetchNewsDetailsByPageNumber(ctx, page, news_id)
+	// Ошибка запроса к базе
+	if err != nil {
+		return domain.GetNewsDetailsResponse{}, errors.Wrap(err, "FetchByPageNumber")
+	}
+
+	// (Либо возвращаем ошибку, либо структуру - и то и тл нет смысла возвращать, потому что если есть
+	// ошибка, то все остальное игнорируется)
+	if repoRes == nil {
+		return domain.GetNewsDetailsResponse{
+			Status: domain.Status{
+				Code:    domain.NotFound,
+				Message: "There are no newsDetails",
+			},
+			NewsDetails: nil,
+		}, nil
+	}
+
+	//Успех
+	return domain.GetNewsDetailsResponse{
+		Status: domain.Status{
+			Code:    domain.Success,
+			Message: domain.Success,
+		},
+		NewsDetails: repoRes,
+	}, nil
+
+}
 
 func (ucase *NewsUseCase) AddNewsCard(ctx context.Context, newsCard domain.NewsCard) (domain.CreateNewsResponse, error) {
 

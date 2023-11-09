@@ -84,6 +84,52 @@ func (d *NewsDeliveryService) GetNews(ctx context.Context, r *pb.GetNewsRequest)
 	return response, nil
 }
 
+func (d *NewsDeliveryService) GetNewsDetails(ctx context.Context, r *pb.GetNewsDetailsRequest) (*pb.GetNewsDetailsResponse, error) {
+	uCaseRes, err := d.newsUcase.GetNewsDetails(ctx, r.Page, r.NewsId)
+
+	if err != nil {
+		return &pb.GetNewsDetailsResponse{
+			Status: &pb.Status{
+				Code:    domain.ServerError,
+				Message: err.Error(),
+			},
+			Data: nil,
+		}, nil
+	}
+
+	if r == nil {
+		return &pb.GetNewsDetailsResponse{
+			Status: &pb.Status{
+				Code:    domain.ValidationError,
+				Message: domain.FieldRequired,
+			},
+			Data: nil,
+		}, nil
+	}
+
+	response := &pb.GetNewsDetailsResponse{
+		Status: &pb.Status{
+			Code:    uCaseRes.Status.Code,
+			Message: uCaseRes.Status.Message,
+		},
+		Data: nil,
+	}
+
+	for i := range uCaseRes.NewsDetails {
+
+		r := &pb.NewsDetails{
+			Id:    uCaseRes.NewsDetails[i].Id,
+			Title: uCaseRes.NewsDetails[i].Title,
+			Image: uCaseRes.NewsDetails[i].Image,
+			Type:  uCaseRes.NewsDetails[i].Type,
+		}
+		response.Data = append(response.Data, r)
+
+	}
+
+	return response, nil
+}
+
 func (d *NewsDeliveryService) AddNewsCard(ctx context.Context, r *pb.CreateNewsCardRequest) (*pb.CreateNewsCardResponse, error) {
 	card := domain.NewsCard{
 		Title: r.Title,

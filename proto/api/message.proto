@@ -8,12 +8,26 @@ import "google/protobuf/timestamp.proto";
 message GetNewsRequest {
   int32 page = 1;
 }
-
 message GetNewsResponse{
   Status status = 1;
   repeated NewsCard data = 2;
 }
 
+// Получить "Сториз"конкретной новости
+message GetNewsDetailsRequest {
+  int32 page = 1;
+  int32 news_id = 2;
+}
+
+
+message GetNewsDetailsResponse{
+  Status status = 1;
+  repeated NewsDetails data = 2;
+}
+
+
+
+// Status message
 message Status {
   string code = 1;
   string message = 2;
@@ -34,7 +48,7 @@ message CreateNewsCardResponse{
 // END Создание карточки новости
 
 
-// BEGIN
+// BEGIN Создание наполнения новости
 message CreateNewsDetailsRequest{
   repeated NewsDetails data = 1;
   int32 news_id = 2;
