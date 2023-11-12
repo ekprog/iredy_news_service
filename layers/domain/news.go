@@ -57,6 +57,8 @@ type NewsRepository interface {
 	FetchNewsDetailsByPageNumber(ctx context.Context, page int32, news_id int32) ([]*NewsDetails, error)
 	InsertIfNotExistsNewsCard(ctx context.Context, newsCard *NewsCard) (int32, error)
 	InsertIfNotExistsNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) error
+	DeleteNewsCard(ctx context.Context, id int32) error
+	DeleteNewsDetails(ctx context.Context, id int32) error
 }
 
 // USE CASES
@@ -65,6 +67,8 @@ type NewsUseCase interface {
 	GetNewsDetails(ctx context.Context, page int32, news_id int32) (GetNewsDetailsResponse, error)
 	AddNewsCard(ctx context.Context, newsCard NewsCard) (CreateNewsResponse, error)
 	AddNewsDetails(ctx context.Context, newsDetails []*NewsDetails, news_id int32) (CreateNewsDetailesResponse, error)
+	DeleteNewsCard(ctx context.Context, id int32) (Status, error)
+	DeleteNewsDetails(ctx context.Context, id int32) (Status, error)
 }
 
 // Response

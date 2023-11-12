@@ -157,3 +157,47 @@ func (ucase *NewsUseCase) AddNewsDetails(ctx context.Context, newsDetails []*dom
 		},
 	}, nil
 }
+
+func (ucase *NewsUseCase) DeleteNewsCard(ctx context.Context, id int32) (domain.Status, error) {
+	// Если передали страницу <= 0, не выходим из функции
+	if id <= 0 {
+		return domain.Status{
+			Code:    domain.ValidationError,
+			Message: "id can't have value of <= 0 or id is required",
+		}, nil
+	}
+	err := ucase.repo.DeleteNewsCard(ctx, id)
+	if err != nil {
+		return domain.Status{
+			Code:    domain.ValidationError,
+			Message: "error in DB request DeleteNewsCard",
+		}, err
+	}
+
+	return domain.Status{
+		Code:    domain.Success,
+		Message: domain.Success,
+	}, nil
+}
+
+func (ucase *NewsUseCase) DeleteNewsDetails(ctx context.Context, id int32) (domain.Status, error) {
+	// Если передали страницу <= 0, не выходим из функции
+	if id <= 0 {
+		return domain.Status{
+			Code:    domain.ValidationError,
+			Message: "id can't have value of <= 0 or id is required",
+		}, nil
+	}
+	err := ucase.repo.DeleteNewsDetails(ctx, id)
+	if err != nil {
+		return domain.Status{
+			Code:    domain.ValidationError,
+			Message: "error in DB request DeleteNewsDetails",
+		}, err
+	}
+
+	return domain.Status{
+		Code:    domain.Success,
+		Message: domain.Success,
+	}, nil
+}

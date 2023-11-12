@@ -8,7 +8,10 @@ package pb;
 
 service NewsService {
     rpc GetNews(GetNewsRequest) returns (GetNewsResponse){}
+    rpc GetNewsDetails(GetNewsDetailsRequest) returns (GetNewsDetailsResponse){}
     rpc AddNewsCard(CreateNewsCardRequest) returns (CreateNewsCardResponse){}
     rpc AddNewsDetails(CreateNewsDetailsRequest) returns (CreateNewsDetailsResponse){}
-    rpc GetNewsDetails(GetNewsDetailsRequest) returns (GetNewsDetailsResponse){}
+    rpc DeleteNewsCard(DeleteNewsCardRequest) returns (Status){}
+    rpc DeleteNewsDetails(DeleteNewsDetailsRequest) returns(Status){}
+
 }

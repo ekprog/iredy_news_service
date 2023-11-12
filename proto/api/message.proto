@@ -47,6 +47,14 @@ message CreateNewsCardResponse{
 }
 // END Создание карточки новости
 
+// BEGIN Удаление карточки новости
+message DeleteNewsCardRequest {
+  int32 id = 1;
+}
+
+
+// END Удаление карточки новости
+
 
 // BEGIN Создание наполнения новости
 message CreateNewsDetailsRequest{
@@ -59,6 +67,13 @@ message CreateNewsDetailsResponse{
 }
 
 // END
+
+// BEGIN Удаление наполнения новости
+message DeleteNewsDetailsRequest {
+  int32 id = 1;
+}
+
+// END Удаление наполнения новости
 
 
 message NewsCard{

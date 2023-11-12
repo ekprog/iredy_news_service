@@ -134,3 +134,36 @@ func (r NewsRepo) InsertIfNotExistsNewsDetails(ctx context.Context, newsDetails 
 
 	return nil
 }
+
+func (r NewsRepo) DeleteNewsCard(ctx context.Context, id int32) error {
+
+	query := fmt.Sprintf(`update news 
+						  set deleted_at = now() 
+						  where id = %d`, id)
+
+	_, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+
+		errors.Wrap(err, "Query while DeleteNewsDetails")
+		return err
+	}
+
+	return nil
+
+}
+
+func (r NewsRepo) DeleteNewsDetails(ctx context.Context, id int32) error {
+
+	query := fmt.Sprintf(`update news_details 
+						  set deleted_at = now() 
+						  where id = %d`, id)
+
+	_, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+
+		errors.Wrap(err, "Query while DeleteNewsDetails")
+		return err
+	}
+
+	return nil
+}

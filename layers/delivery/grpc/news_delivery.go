@@ -188,3 +188,33 @@ func (d *NewsDeliveryService) AddNewsDetails(ctx context.Context, r *pb.CreateNe
 	}, nil
 
 }
+
+func (d *NewsDeliveryService) DeleteNewsCard(ctx context.Context, r *pb.DeleteNewsCardRequest) (*pb.Status, error) {
+	uCaseRes, err := d.newsUcase.DeleteNewsCard(ctx, r.Id)
+	if err != nil {
+		return &pb.Status{
+			Code:    uCaseRes.Code,
+			Message: uCaseRes.Message,
+		}, err
+	}
+
+	return &pb.Status{
+		Code:    uCaseRes.Code,
+		Message: uCaseRes.Message,
+	}, nil
+}
+
+func (d *NewsDeliveryService) DeleteNewsDetails(ctx context.Context, r *pb.DeleteNewsDetailsRequest) (*pb.Status, error) {
+	uCaseRes, err := d.newsUcase.DeleteNewsDetails(ctx, r.Id)
+	if err != nil {
+		return &pb.Status{
+			Code:    uCaseRes.Code,
+			Message: uCaseRes.Message,
+		}, err
+	}
+
+	return &pb.Status{
+		Code:    uCaseRes.Code,
+		Message: uCaseRes.Message,
+	}, nil
+}
